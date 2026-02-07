@@ -1,6 +1,6 @@
 /**
- * Effect function: takes source ImageData, writes to destination (or returns new ImageData).
- * Width/height are the same for in/out; dest may be the same as src for in-place.
+ * Effect function: takes source ImageData, writes to destination.
+ * dest dimensions match getOutputSize(src.width, src.height) or (src.width, src.height) if omitted.
  */
 export type EffectFn = (
   src: ImageData,
@@ -10,4 +10,6 @@ export type EffectFn = (
 export interface RegistryEntry {
   name: string;
   apply: EffectFn;
+  /** If set, the effect output has different dimensions (e.g. 90° rotation). */
+  getOutputSize?: (width: number, height: number) => { width: number; height: number };
 }

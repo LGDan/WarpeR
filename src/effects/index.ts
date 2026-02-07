@@ -1,10 +1,12 @@
 import { register } from "./registry.js";
+import * as artistic from "./artistic.js";
 import * as blur from "./blur.js";
 import * as channels from "./channels.js";
 import * as contrast from "./contrast.js";
 import * as deepfry from "./deepfry.js";
 import * as dither from "./dither.js";
 import * as emboss from "./emboss.js";
+import * as glitch from "./glitch.js";
 import * as grayscale from "./grayscale.js";
 import * as invert from "./invert.js";
 import * as kaleidoscope from "./kaleidoscope.js";
@@ -12,6 +14,7 @@ import * as pixelate from "./pixelate.js";
 import * as pixelSort from "./pixelSort.js";
 import * as posterize from "./posterize.js";
 import * as rgbShift from "./rgbShift.js";
+import * as rotation from "./rotation.js";
 import * as saturation from "./saturation.js";
 import * as scanlines from "./scanlines.js";
 import * as sepia from "./sepia.js";
@@ -55,4 +58,40 @@ export function registerAll(): void {
   register(32, { name: "Contrast down", apply: contrast.contrastDown });
   register(33, { name: "Brightness up", apply: contrast.brightnessUp });
   register(34, { name: "Brightness down", apply: contrast.brightnessDown });
+  register(35, { name: "Glitch slice shift", apply: glitch.sliceShift });
+  register(36, { name: "Glitch scan jitter", apply: glitch.scanJitter });
+  register(37, { name: "Glitch mirror slices", apply: glitch.mirrorSlices });
+  register(38, { name: "Glitch RGB shift vertical", apply: glitch.rgbShiftVertical });
+  register(39, { name: "Glitch noise lines", apply: glitch.noiseLines });
+  register(40, { name: "Glitch block scramble", apply: glitch.blockScramble });
+  register(41, { name: "Glitch data smear", apply: glitch.dataSmear });
+  register(42, { name: "Pixel sort columns", apply: pixelSort.pixelSortColumns });
+  register(43, { name: "Duotone", apply: artistic.duotone });
+  register(44, { name: "Warm tint", apply: artistic.warmTint });
+  register(45, { name: "Cool tint", apply: artistic.coolTint });
+  register(46, { name: "Fade", apply: artistic.fade });
+  register(47, { name: "Film grain", apply: artistic.filmGrain });
+  register(48, { name: "Edge outline", apply: artistic.edgeOutline });
+  register(59, { name: "Find edges", apply: artistic.findEdges });
+  register(60, { name: "Glowing edges", apply: artistic.glowingEdges });
+  register(61, { name: "Colorise", apply: artistic.colorise });
+  register(62, { name: "Colorise warm", apply: artistic.coloriseWarm });
+  register(49, { name: "High key", apply: artistic.highKey });
+  register(50, { name: "Low key", apply: artistic.lowKey });
+  register(51, { name: "Lomo", apply: artistic.lomo });
+  register(52, { name: "Rotate 180°", apply: rotation.rotate180 });
+  register(53, {
+    name: "Rotate 90° CW",
+    apply: rotation.rotate90CW,
+    getOutputSize: (w, h) => ({ width: h, height: w }),
+  });
+  register(54, {
+    name: "Rotate 90° CCW",
+    apply: rotation.rotate90CCW,
+    getOutputSize: (w, h) => ({ width: h, height: w }),
+  });
+  register(55, { name: "Rotate 5°", apply: rotation.rotate5 });
+  register(56, { name: "Rotate 15°", apply: rotation.rotate15 });
+  register(57, { name: "Rotate -5°", apply: rotation.rotateNeg5 });
+  register(58, { name: "Rotate -15°", apply: rotation.rotateNeg15 });
 }

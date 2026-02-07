@@ -29,3 +29,29 @@ export const pixelSortRows: EffectFn = (src: ImageData, dest: ImageData): void =
     }
   }
 };
+
+export const pixelSortColumns: EffectFn = (src: ImageData, dest: ImageData): void => {
+  const { width, height, data: srcData } = src;
+  const destData = dest.data;
+
+  for (let x = 0; x < width; x++) {
+    const colPixels: { r: number; g: number; b: number; a: number; l: number }[] = [];
+    for (let y = 0; y < height; y++) {
+      const i = (y * width + x) * 4;
+      const r = srcData[i]!;
+      const g = srcData[i + 1]!;
+      const b = srcData[i + 2]!;
+      const a = srcData[i + 3]!;
+      colPixels.push({ r, g, b, a, l: luminance(r, g, b) });
+    }
+    colPixels.sort((a, b) => a.l - b.l);
+    for (let y = 0; y < height; y++) {
+      const p = colPixels[y]!;
+      const o = (y * width + x) * 4;
+      destData[o] = p.r;
+      destData[o + 1] = p.g;
+      destData[o + 2] = p.b;
+      destData[o + 3] = p.a;
+    }
+  }
+};

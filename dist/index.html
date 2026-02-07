@@ -29,10 +29,42 @@
       #canvas-wrap {
         flex: 1;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         min-height: 0;
         width: 100%;
+      }
+      #breadcrumb-bar {
+        width: 100%;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.7);
+        background: rgba(0,0,0,0.35);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        min-height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      #breadcrumb-bar .breadcrumb-list {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      #breadcrumb-bar .crumb {
+        color: rgba(255,255,255,0.9);
+      }
+      #breadcrumb-bar .separator {
+        color: rgba(255,255,255,0.4);
+        user-select: none;
+      }
+      #breadcrumb-bar .empty-label {
+        color: rgba(255,255,255,0.45);
+        font-style: italic;
       }
       #canvas-frame {
         display: inline-flex;
@@ -112,16 +144,19 @@
         height: 0;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-Ce1g4J3N.js"></script>
+    <script type="module" crossorigin src="/assets/index-BcV9qmcj.js"></script>
   </head>
   <body>
     <div id="app">
       <div id="drop-zone">
-        <span>Drop an image here or </span>
+        <span>Drop an image here or&nbsp;</span>
         <span id="choose-file" style="text-decoration: underline; cursor: pointer">choose a file</span>
         <input type="file" id="file-input" accept="image/*" />
       </div>
       <div id="canvas-wrap" class="hidden" tabindex="-1">
+        <div id="breadcrumb-bar" aria-label="Effect history">
+          <div class="breadcrumb-list"></div>
+        </div>
         <div id="canvas-frame">
           <canvas id="canvas"></canvas>
           <div id="canvas-caption" aria-live="polite"></div>
