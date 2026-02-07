@@ -1,6 +1,11 @@
 # WarpeR
 
-Interactive image toy: load an image, type effect numbers and press Enter to apply, Backspace to undo. Add `.5` after a number (e.g. `21.5`) to apply that effect only to the left half of the image. Type `S` then a seed number (e.g. `S42`) and Enter to run a deterministic random sequence of effects.
+Interactive image effect sandbox: load an image, type effect numbers and press Enter to apply, Backspace to undo. Add `.5` after a number (e.g. `21.5`) to apply that effect only to the left half of the image. Type `S` then a seed number (e.g. `S42`) and Enter to run a deterministic random sequence of effects.
+
+## Beware!
+
+> [!WARNING]
+> This project is vibe-coded with minimal edits. 
 
 
 ## Effects
