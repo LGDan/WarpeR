@@ -88,7 +88,9 @@ function updateBreadcrumb(): void {
     }
     const crumb = document.createElement("span");
     crumb.className = "crumb";
-    crumb.textContent = String(effectHistory[i]);
+    const effectId = effectHistory[i]!;
+    crumb.textContent = String(effectId);
+    crumb.title = getName(effectId);
     breadcrumbList.appendChild(crumb);
   }
 }
