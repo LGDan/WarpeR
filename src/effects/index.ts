@@ -139,4 +139,13 @@ export function registerAll(): void {
   register(79, { name: "Pinch", apply: warp.pinch });
   register(80, { name: "Skew", apply: warp.skew });
   register(81, { name: "Skew wrap", apply: warp.skewWrap });
+  register(82, { name: "Glitch line tilt", apply: glitch.lineTilt });
+
+  // 83–88: Per-channel contrast (R/G/B up/down)
+  register(83, { name: "Red contrast up", apply: channels.redContrastUp });
+  register(84, { name: "Red contrast down", apply: channels.redContrastDown });
+  register(85, { name: "Green contrast up", apply: channels.greenContrastUp });
+  register(86, { name: "Green contrast down", apply: channels.greenContrastDown });
+  register(87, { name: "Blue contrast up", apply: channels.blueContrastUp });
+  register(88, { name: "Blue contrast down", apply: channels.blueContrastDown });
 }

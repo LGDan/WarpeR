@@ -93,6 +93,13 @@ Interactive image effect sandbox: load an image, type effect numbers and press E
 | 79 | Pinch |
 | 80 | Skew |
 | 81 | Skew wrap |
+| 82 | Glitch line tilt |
+| 83 | Red contrast up |
+| 84 | Red contrast down |
+| 85 | Green contrast up |
+| 86 | Green contrast down |
+| 87 | Blue contrast up |
+| 88 | Blue contrast down |
 
 ## Fun Combos
 
