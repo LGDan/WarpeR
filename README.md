@@ -87,6 +87,12 @@ Interactive image effect sandbox: load an image, type effect numbers and press E
 | 73 | White stripes NW/SE small |
 | 74 | White stripes NW/SE medium |
 | 75 | White stripes NW/SE large |
+| 76 | Radial blur |
+| 77 | Swirl |
+| 78 | Bulge |
+| 79 | Pinch |
+| 80 | Skew |
+| 81 | Skew wrap |
 
 ## Fun Combos
 

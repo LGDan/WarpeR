@@ -24,6 +24,7 @@ import * as splitFour from "./splitFour.js";
 import * as splitNine from "./splitNine.js";
 import * as vignette from "./vignette.js";
 import * as whiteStripes from "./whiteStripes.js";
+import * as warp from "./warp.js";
 
 export function registerAll(): void {
   // 1–5: Blur & sharpen
@@ -130,4 +131,12 @@ export function registerAll(): void {
   register(73, { name: "White stripes NW/SE small", apply: whiteStripes.whiteStripesNWSESmall });
   register(74, { name: "White stripes NW/SE medium", apply: whiteStripes.whiteStripesNWSEMedium });
   register(75, { name: "White stripes NW/SE large", apply: whiteStripes.whiteStripesNWSELarge });
+
+  // 76–80: Warp & distort
+  register(76, { name: "Radial blur", apply: warp.radialBlur });
+  register(77, { name: "Swirl", apply: warp.swirl });
+  register(78, { name: "Bulge", apply: warp.bulge });
+  register(79, { name: "Pinch", apply: warp.pinch });
+  register(80, { name: "Skew", apply: warp.skew });
+  register(81, { name: "Skew wrap", apply: warp.skewWrap });
 }
