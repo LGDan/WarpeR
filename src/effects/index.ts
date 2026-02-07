@@ -1,11 +1,24 @@
 import { register } from "./registry.js";
 import * as blur from "./blur.js";
 import * as channels from "./channels.js";
+import * as contrast from "./contrast.js";
 import * as deepfry from "./deepfry.js";
-import * as saturation from "./saturation.js";
-import * as splitFour from "./splitFour.js";
-import * as invert from "./invert.js";
+import * as dither from "./dither.js";
+import * as emboss from "./emboss.js";
 import * as grayscale from "./grayscale.js";
+import * as invert from "./invert.js";
+import * as kaleidoscope from "./kaleidoscope.js";
+import * as pixelate from "./pixelate.js";
+import * as pixelSort from "./pixelSort.js";
+import * as posterize from "./posterize.js";
+import * as rgbShift from "./rgbShift.js";
+import * as saturation from "./saturation.js";
+import * as scanlines from "./scanlines.js";
+import * as sepia from "./sepia.js";
+import * as sharpen from "./sharpen.js";
+import * as solarize from "./solarize.js";
+import * as splitFour from "./splitFour.js";
+import * as vignette from "./vignette.js";
 
 export function registerAll(): void {
   register(1, { name: "Blur light", apply: blur.blurLight });
@@ -23,4 +36,23 @@ export function registerAll(): void {
   register(13, { name: "Split into 4", apply: splitFour.splitFour });
   register(14, { name: "Invert", apply: invert.invert });
   register(15, { name: "Grayscale", apply: grayscale.grayscale });
+  register(16, { name: "Pixelate small", apply: pixelate.pixelateSmall });
+  register(17, { name: "Pixelate medium", apply: pixelate.pixelateMedium });
+  register(18, { name: "Pixelate large", apply: pixelate.pixelateLarge });
+  register(19, { name: "Posterize 4 levels", apply: posterize.posterize4 });
+  register(20, { name: "Posterize 8 levels", apply: posterize.posterize8 });
+  register(21, { name: "Dither", apply: dither.dither });
+  register(22, { name: "Scanlines", apply: scanlines.scanlines });
+  register(23, { name: "RGB shift", apply: rgbShift.rgbShift });
+  register(24, { name: "Pixel sort rows", apply: pixelSort.pixelSortRows });
+  register(25, { name: "Sepia", apply: sepia.sepia });
+  register(26, { name: "Solarize", apply: solarize.solarize });
+  register(27, { name: "Vignette", apply: vignette.vignette });
+  register(28, { name: "Kaleidoscope", apply: kaleidoscope.kaleidoscope });
+  register(29, { name: "Emboss", apply: emboss.emboss });
+  register(30, { name: "Sharpen", apply: sharpen.sharpen });
+  register(31, { name: "Contrast up", apply: contrast.contrastUp });
+  register(32, { name: "Contrast down", apply: contrast.contrastDown });
+  register(33, { name: "Brightness up", apply: contrast.brightnessUp });
+  register(34, { name: "Brightness down", apply: contrast.brightnessDown });
 }

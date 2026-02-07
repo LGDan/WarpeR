@@ -9,8 +9,11 @@ const fileInput = document.getElementById("file-input") as HTMLInputElement;
 const canvasWrap = document.getElementById("canvas-wrap") as HTMLDivElement;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const inputArea = document.getElementById("input-area") as HTMLDivElement;
-const commandInput = document.getElementById("command-input") as HTMLInputElement;
-const effectNameEl = document.getElementById("effect-name") as HTMLDivElement;
+const commandDisplay = document.getElementById("command-display") as HTMLDivElement;
+const canvasCaption = document.getElementById("canvas-caption") as HTMLDivElement;
+
+const MAX_DIGITS = 6;
+let typedDigits = "";
 
 const ctxOrNull = canvas.getContext("2d");
 if (!ctxOrNull) throw new Error("Canvas 2D not available");
@@ -20,7 +23,9 @@ function showWorkspace(): void {
   dropZone.classList.add("hidden");
   canvasWrap.classList.remove("hidden");
   inputArea.classList.remove("hidden");
-  commandInput.focus();
+  typedDigits = "";
+  syncCommandUI();
+  canvasWrap.focus();
 }
 
 function loadImage(img: HTMLImageElement): void {
@@ -53,33 +58,50 @@ function applyEffect(id: number): void {
   redraw();
 }
 
-function updateEffectName(): void {
-  const raw = commandInput.value.replace(/\D/g, "");
-  const id = raw === "" ? 0 : parseInt(raw, 10);
-  effectNameEl.textContent = id ? getName(id) : "";
+function syncCommandUI(): void {
+  commandDisplay.textContent = typedDigits;
+  if (typedDigits.length > 0) {
+    inputArea.classList.add("visible");
+    const id = parseInt(typedDigits, 10);
+    canvasCaption.textContent = getName(id);
+  } else {
+    inputArea.classList.remove("visible");
+    canvasCaption.textContent = "";
+  }
 }
 
-commandInput.addEventListener("input", () => {
-  commandInput.value = commandInput.value.replace(/\D/g, "");
-  updateEffectName();
-});
+document.addEventListener("keydown", (e) => {
+  if (canvasWrap.classList.contains("hidden")) return;
+  const target = e.target as HTMLElement;
+  if (target.closest("input") || target.closest("textarea") || target.closest("select")) return;
 
-commandInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
+  if (/^[0-9]$/.test(e.key)) {
     e.preventDefault();
-    const raw = commandInput.value.replace(/\D/g, "");
-    if (raw === "") return;
-    const id = parseInt(raw, 10);
-    if (get(id)) {
-      applyEffect(id);
-      commandInput.value = "";
-      updateEffectName();
+    if (typedDigits.length < MAX_DIGITS) {
+      typedDigits += e.key;
+      syncCommandUI();
     }
     return;
   }
-  if (e.key === "Backspace" && commandInput.value === "") {
+  if (e.key === "Enter") {
     e.preventDefault();
-    if (state.undo()) redraw();
+    if (typedDigits.length === 0) return;
+    const id = parseInt(typedDigits, 10);
+    if (get(id)) {
+      applyEffect(id);
+      typedDigits = "";
+      syncCommandUI();
+    }
+    return;
+  }
+  if (e.key === "Backspace") {
+    e.preventDefault();
+    if (typedDigits.length > 0) {
+      typedDigits = typedDigits.slice(0, -1);
+      syncCommandUI();
+    } else {
+      if (state.undo()) redraw();
+    }
     return;
   }
 });
