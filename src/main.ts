@@ -15,7 +15,11 @@ const breadcrumbList = document.querySelector("#breadcrumb-bar .breadcrumb-list"
 
 const MAX_DIGITS = 6;
 let typedDigits = "";
-let effectHistory: number[] = [];
+interface EffectStep {
+  id: number;
+  leftHalfOnly: boolean;
+}
+let effectHistory: EffectStep[] = [];
 
 const ctxOrNull = canvas.getContext("2d");
 if (!ctxOrNull) throw new Error("Canvas 2D not available");
@@ -54,17 +58,44 @@ function redraw(): void {
   ctx.putImageData(current, 0, 0);
 }
 
-function applyEffect(id: number): void {
+function applyEffect(id: number, leftHalfOnly: boolean): void {
   const entry = get(id);
   if (!entry) return;
   const current = state.getCurrent();
   if (!current) return;
   state.pushHistory();
-  effectHistory.push(id);
   const size = entry.getOutputSize?.(current.width, current.height) ?? { width: current.width, height: current.height };
   const dest = new ImageData(size.width, size.height);
   entry.apply(current, dest);
-  state.setCurrent(dest);
+
+  const sameSize = size.width === current.width && size.height === current.height;
+  if (leftHalfOnly && sameSize) {
+    const composite = new ImageData(current.width, current.height);
+    const mid = current.width >>> 1;
+    const cd = composite.data;
+    const cur = current.data;
+    const dst = dest.data;
+    for (let y = 0; y < current.height; y++) {
+      for (let x = 0; x < current.width; x++) {
+        const i = (y * current.width + x) * 4;
+        if (x < mid) {
+          cd[i] = dst[i]!;
+          cd[i + 1] = dst[i + 1]!;
+          cd[i + 2] = dst[i + 2]!;
+          cd[i + 3] = dst[i + 3]!;
+        } else {
+          cd[i] = cur[i]!;
+          cd[i + 1] = cur[i + 1]!;
+          cd[i + 2] = cur[i + 2]!;
+          cd[i + 3] = cur[i + 3]!;
+        }
+      }
+    }
+    state.setCurrent(composite);
+  } else {
+    state.setCurrent(dest);
+  }
+  effectHistory.push({ id, leftHalfOnly: leftHalfOnly && sameSize });
   updateBreadcrumb();
   redraw();
 }
@@ -88,19 +119,34 @@ function updateBreadcrumb(): void {
     }
     const crumb = document.createElement("span");
     crumb.className = "crumb";
-    const effectId = effectHistory[i]!;
-    crumb.textContent = String(effectId);
-    crumb.title = getName(effectId);
+    const step = effectHistory[i]!;
+    crumb.textContent = step.leftHalfOnly ? `${step.id}.5` : String(step.id);
+    crumb.title = getName(step.id) + (step.leftHalfOnly ? " (left half)" : "");
     breadcrumbList.appendChild(crumb);
   }
+}
+
+function parseTypedEffect(): { id: number; leftHalfOnly: boolean } | null {
+  if (typedDigits.length === 0) return null;
+  const leftHalfOnly = typedDigits.endsWith(".5");
+  const raw = leftHalfOnly ? typedDigits.slice(0, -2) : typedDigits;
+  if (raw.length === 0) return null;
+  const id = Number.parseInt(raw, 10);
+  if (!Number.isFinite(id)) return null;
+  return { id, leftHalfOnly };
 }
 
 function syncCommandUI(): void {
   commandDisplay.textContent = typedDigits;
   if (typedDigits.length > 0) {
     inputArea.classList.add("visible");
-    const id = parseInt(typedDigits, 10);
-    canvasCaption.textContent = getName(id);
+    const parsed = parseTypedEffect();
+    if (parsed && get(parsed.id)) {
+      canvasCaption.textContent =
+        getName(parsed.id) + (parsed.leftHalfOnly ? " (left half)" : "");
+    } else {
+      canvasCaption.textContent = "";
+    }
   } else {
     inputArea.classList.remove("visible");
     canvasCaption.textContent = "";
@@ -112,8 +158,23 @@ document.addEventListener("keydown", (e) => {
   const target = e.target as HTMLElement;
   if (target.closest("input") || target.closest("textarea") || target.closest("select")) return;
 
+  if (e.key === ".") {
+    e.preventDefault();
+    if (!typedDigits.includes(".") && typedDigits.length >= 1 && typedDigits.length <= MAX_DIGITS) {
+      typedDigits += ".";
+      syncCommandUI();
+    }
+    return;
+  }
+  if (e.key === "5" && typedDigits.endsWith(".")) {
+    e.preventDefault();
+    typedDigits += "5";
+    syncCommandUI();
+    return;
+  }
   if (/^[0-9]$/.test(e.key)) {
     e.preventDefault();
+    if (typedDigits.endsWith(".")) return;
     if (typedDigits.length < MAX_DIGITS) {
       typedDigits += e.key;
       syncCommandUI();
@@ -122,13 +183,11 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key === "Enter") {
     e.preventDefault();
-    if (typedDigits.length === 0) return;
-    const id = parseInt(typedDigits, 10);
-    if (get(id)) {
-      applyEffect(id);
-      typedDigits = "";
-      syncCommandUI();
-    }
+    const parsed = parseTypedEffect();
+    if (!parsed || !get(parsed.id)) return;
+    applyEffect(parsed.id, parsed.leftHalfOnly);
+    typedDigits = "";
+    syncCommandUI();
     return;
   }
   if (e.key === "Backspace") {
