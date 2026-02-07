@@ -6,6 +6,7 @@ registerAll();
 
 const dropZone = document.getElementById("drop-zone") as HTMLDivElement;
 const fileInput = document.getElementById("file-input") as HTMLInputElement;
+const workspace = document.getElementById("workspace") as HTMLDivElement;
 const canvasWrap = document.getElementById("canvas-wrap") as HTMLDivElement;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const inputArea = document.getElementById("input-area") as HTMLDivElement;
@@ -27,7 +28,7 @@ const ctx = ctxOrNull;
 
 function showWorkspace(): void {
   dropZone.classList.add("hidden");
-  canvasWrap.classList.remove("hidden");
+  workspace.classList.remove("hidden");
   inputArea.classList.remove("hidden");
   typedDigits = "";
   syncCommandUI();
@@ -201,7 +202,7 @@ function syncCommandUI(): void {
 }
 
 document.addEventListener("keydown", (e) => {
-  if (canvasWrap.classList.contains("hidden")) return;
+  if (workspace.classList.contains("hidden")) return;
   const target = e.target as HTMLElement;
   if (target.closest("input") || target.closest("textarea") || target.closest("select")) return;
 
@@ -250,6 +251,13 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key === "Enter") {
     e.preventDefault();
+    if (typedDigits.length === 0) {
+      const last = effectHistory[effectHistory.length - 1];
+      if (last && get(last.id)) {
+        applyEffect(last.id, last.leftHalfOnly);
+      }
+      return;
+    }
     const seed = parseTypedSeed();
     if (seed !== null) {
       applySeedSequence(seed);
