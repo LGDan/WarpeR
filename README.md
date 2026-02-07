@@ -66,14 +66,40 @@ Interactive image effect sandbox: load an image, type effect numbers and press E
 | 52 | Find edges |
 | 53 | Glowing edges |
 | 54 | Split into 4 |
-| 55 | Kaleidoscope |
-| 56 | Rotate 180° |
-| 57 | Rotate 90° CW |
-| 58 | Rotate 90° CCW |
-| 59 | Rotate 5° |
-| 60 | Rotate 15° |
-| 61 | Rotate -5° |
-| 62 | Rotate -15° |
+| 55 | Split into 9 |
+| 56 | Kaleidoscope |
+| 57 | Rotate 180° |
+| 58 | Rotate 90° CW |
+| 59 | Rotate 90° CCW |
+| 60 | Rotate 5° |
+| 61 | Rotate 15° |
+| 62 | Rotate -5° |
+| 63 | Rotate -15° |
+| 64 | White stripes N/S small |
+| 65 | White stripes N/S medium |
+| 66 | White stripes N/S large |
+| 67 | White stripes E/W small |
+| 68 | White stripes E/W medium |
+| 69 | White stripes E/W large |
+| 70 | White stripes SW/NE small |
+| 71 | White stripes SW/NE medium |
+| 72 | White stripes SW/NE large |
+| 73 | White stripes NW/SE small |
+| 74 | White stripes NW/SE medium |
+| 75 | White stripes NW/SE large |
+| 76 | Radial blur |
+| 77 | Swirl |
+| 78 | Bulge |
+| 79 | Pinch |
+| 80 | Skew |
+| 81 | Skew wrap |
+| 82 | Glitch line tilt |
+| 83 | Red contrast up |
+| 84 | Red contrast down |
+| 85 | Green contrast up |
+| 86 | Green contrast down |
+| 87 | Blue contrast up |
+| 88 | Blue contrast down |
 
 ## Fun Combos
 

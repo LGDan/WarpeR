@@ -166,3 +166,26 @@ export const dataSmear: EffectFn = (src: ImageData, dest: ImageData): void => {
     }
   }
 };
+
+/**
+ * Rows above center shift right (wrap); rows below center shift left (wrap).
+ * Offset in pixels = distance from center (row index above center = shift right, below = shift left).
+ */
+export const lineTilt: EffectFn = (src: ImageData, dest: ImageData): void => {
+  const { width, height, data: srcData } = src;
+  const destData = dest.data;
+  const centerY = (height - 1) / 2;
+
+  for (let y = 0; y < height; y++) {
+    const offset = centerY - y;
+    for (let x = 0; x < width; x++) {
+      const sx = (x - offset + width * 2) % width;
+      const si = (y * width + sx) * 4;
+      const o = (y * width + x) * 4;
+      destData[o] = srcData[si]!;
+      destData[o + 1] = srcData[si + 1]!;
+      destData[o + 2] = srcData[si + 2]!;
+      destData[o + 3] = srcData[si + 3]!;
+    }
+  }
+};

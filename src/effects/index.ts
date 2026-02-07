@@ -21,7 +21,10 @@ import * as sepia from "./sepia.js";
 import * as sharpen from "./sharpen.js";
 import * as solarize from "./solarize.js";
 import * as splitFour from "./splitFour.js";
+import * as splitNine from "./splitNine.js";
 import * as vignette from "./vignette.js";
+import * as whiteStripes from "./whiteStripes.js";
+import * as warp from "./warp.js";
 
 export function registerAll(): void {
   // 1–5: Blur & sharpen
@@ -97,20 +100,52 @@ export function registerAll(): void {
 
   // 54–62: Transform & layout
   register(54, { name: "Split into 4", apply: splitFour.splitFour });
-  register(55, { name: "Kaleidoscope", apply: kaleidoscope.kaleidoscope });
-  register(56, { name: "Rotate 180°", apply: rotation.rotate180 });
-  register(57, {
+  register(55, { name: "Split into 9", apply: splitNine.splitNine });
+  register(56, { name: "Kaleidoscope", apply: kaleidoscope.kaleidoscope });
+  register(57, { name: "Rotate 180°", apply: rotation.rotate180 });
+  register(58, {
     name: "Rotate 90° CW",
     apply: rotation.rotate90CW,
     getOutputSize: (w, h) => ({ width: h, height: w }),
   });
-  register(58, {
+  register(59, {
     name: "Rotate 90° CCW",
     apply: rotation.rotate90CCW,
     getOutputSize: (w, h) => ({ width: h, height: w }),
   });
-  register(59, { name: "Rotate 5°", apply: rotation.rotate5 });
-  register(60, { name: "Rotate 15°", apply: rotation.rotate15 });
-  register(61, { name: "Rotate -5°", apply: rotation.rotateNeg5 });
-  register(62, { name: "Rotate -15°", apply: rotation.rotateNeg15 });
+  register(60, { name: "Rotate 5°", apply: rotation.rotate5 });
+  register(61, { name: "Rotate 15°", apply: rotation.rotate15 });
+  register(62, { name: "Rotate -5°", apply: rotation.rotateNeg5 });
+  register(63, { name: "Rotate -15°", apply: rotation.rotateNeg15 });
+
+  // 64–75: White stripes (N/S, E/W, SW/NE, NW/SE × small, medium, large)
+  register(64, { name: "White stripes N/S small", apply: whiteStripes.whiteStripesNSSmall });
+  register(65, { name: "White stripes N/S medium", apply: whiteStripes.whiteStripesNSMedium });
+  register(66, { name: "White stripes N/S large", apply: whiteStripes.whiteStripesNSLarge });
+  register(67, { name: "White stripes E/W small", apply: whiteStripes.whiteStripesEWSmall });
+  register(68, { name: "White stripes E/W medium", apply: whiteStripes.whiteStripesEWMedium });
+  register(69, { name: "White stripes E/W large", apply: whiteStripes.whiteStripesEWLarge });
+  register(70, { name: "White stripes SW/NE small", apply: whiteStripes.whiteStripesSWNESmall });
+  register(71, { name: "White stripes SW/NE medium", apply: whiteStripes.whiteStripesSWNEMedium });
+  register(72, { name: "White stripes SW/NE large", apply: whiteStripes.whiteStripesSWNELarge });
+  register(73, { name: "White stripes NW/SE small", apply: whiteStripes.whiteStripesNWSESmall });
+  register(74, { name: "White stripes NW/SE medium", apply: whiteStripes.whiteStripesNWSEMedium });
+  register(75, { name: "White stripes NW/SE large", apply: whiteStripes.whiteStripesNWSELarge });
+
+  // 76–80: Warp & distort
+  register(76, { name: "Radial blur", apply: warp.radialBlur });
+  register(77, { name: "Swirl", apply: warp.swirl });
+  register(78, { name: "Bulge", apply: warp.bulge });
+  register(79, { name: "Pinch", apply: warp.pinch });
+  register(80, { name: "Skew", apply: warp.skew });
+  register(81, { name: "Skew wrap", apply: warp.skewWrap });
+  register(82, { name: "Glitch line tilt", apply: glitch.lineTilt });
+
+  // 83–88: Per-channel contrast (R/G/B up/down)
+  register(83, { name: "Red contrast up", apply: channels.redContrastUp });
+  register(84, { name: "Red contrast down", apply: channels.redContrastDown });
+  register(85, { name: "Green contrast up", apply: channels.greenContrastUp });
+  register(86, { name: "Green contrast down", apply: channels.greenContrastDown });
+  register(87, { name: "Blue contrast up", apply: channels.blueContrastUp });
+  register(88, { name: "Blue contrast down", apply: channels.blueContrastDown });
 }
