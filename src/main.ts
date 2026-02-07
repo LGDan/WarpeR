@@ -292,6 +292,8 @@ if (hasTouch) {
   }
 }
 
+document.addEventListener("selectstart", (e) => e.preventDefault());
+
 const LONG_PRESS_MS = 500;
 let longPressTimer: ReturnType<typeof setTimeout> | null = null;
 let longPressPointerId: number | null = null;
