@@ -1,5 +1,6 @@
 import { registerAll } from "./effects/index.js";
 import { get, getAllIds, getName } from "./effects/registry.js";
+import { createRadialKeyboard } from "./radialKeyboard.js";
 import * as state from "./state.js";
 
 registerAll();
@@ -201,21 +202,16 @@ function syncCommandUI(): void {
   }
 }
 
-document.addEventListener("keydown", (e) => {
-  if (workspace.classList.contains("hidden")) return;
-  const target = e.target as HTMLElement;
-  if (target.closest("input") || target.closest("textarea") || target.closest("select")) return;
-
-  if (e.key === "S" || e.key === "s") {
-    e.preventDefault();
+/** Shared key handler for keyboard and radial input. key: "0"-"9", "S", ".", "Enter", "Backspace". */
+function processKey(key: string): void {
+  if (key === "S" || key === "s") {
     if (typedDigits.length === 0) {
       typedDigits = "S";
       syncCommandUI();
     }
     return;
   }
-  if (e.key === ".") {
-    e.preventDefault();
+  if (key === ".") {
     if (
       !typedDigits.startsWith("S") &&
       !typedDigits.includes(".") &&
@@ -227,30 +223,27 @@ document.addEventListener("keydown", (e) => {
     }
     return;
   }
-  if (e.key === "5" && typedDigits.endsWith(".")) {
-    e.preventDefault();
+  if (key === "5" && typedDigits.endsWith(".")) {
     typedDigits += "5";
     syncCommandUI();
     return;
   }
-  if (/^\d$/.test(e.key)) {
-    e.preventDefault();
+  if (/^\d$/.test(key)) {
     if (typedDigits.startsWith("S")) {
       if (typedDigits.length < 1 + MAX_SEED_DIGITS) {
-        typedDigits += e.key;
+        typedDigits += key;
         syncCommandUI();
       }
       return;
     }
     if (typedDigits.endsWith(".")) return;
     if (typedDigits.length < MAX_DIGITS) {
-      typedDigits += e.key;
+      typedDigits += key;
       syncCommandUI();
     }
     return;
   }
-  if (e.key === "Enter") {
-    e.preventDefault();
+  if (key === "Enter") {
     if (typedDigits.length === 0) {
       const last = effectHistory[effectHistory.length - 1];
       if (last && get(last.id)) {
@@ -272,8 +265,7 @@ document.addEventListener("keydown", (e) => {
     syncCommandUI();
     return;
   }
-  if (e.key === "Backspace") {
-    e.preventDefault();
+  if (key === "Backspace") {
     if (typedDigits.length > 0) {
       typedDigits = typedDigits.slice(0, -1);
       syncCommandUI();
@@ -284,7 +276,107 @@ document.addEventListener("keydown", (e) => {
         redraw();
       }
     }
-    return;
+  }
+}
+
+const hasTouch =
+  typeof window !== "undefined" &&
+  ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+let radialKeyboard: ReturnType<typeof createRadialKeyboard> | null = null;
+if (hasTouch) {
+  const placeholder = document.getElementById("radial-keyboard-placeholder");
+  if (placeholder) {
+    radialKeyboard = createRadialKeyboard();
+    placeholder.appendChild(radialKeyboard.getElement());
+  }
+}
+
+const LONG_PRESS_MS = 500;
+let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+let longPressPointerId: number | null = null;
+let radialPointerId: number | null = null;
+
+function clearLongPressTimer(): void {
+  if (longPressTimer !== null) {
+    clearTimeout(longPressTimer);
+    longPressTimer = null;
+  }
+  longPressPointerId = null;
+}
+
+function onPointerUpOrCancel(e: PointerEvent): void {
+  if (e.pointerId !== radialPointerId) return;
+  if (radialKeyboard) {
+    const key = radialKeyboard.hitTest(e.clientX, e.clientY);
+    if (key) processKey(key);
+    radialKeyboard.hide();
+  }
+  radialPointerId = null;
+  document.removeEventListener("pointermove", onRadialPointerMove);
+  document.removeEventListener("pointerup", onPointerUpOrCancel);
+  document.removeEventListener("pointercancel", onPointerUpOrCancel);
+}
+
+function onRadialPointerMove(e: PointerEvent): void {
+  if (e.pointerId !== radialPointerId || !radialKeyboard) return;
+  e.preventDefault();
+  const key = radialKeyboard.hitTest(e.clientX, e.clientY);
+  radialKeyboard.setHighlight(key);
+}
+
+function setupRadialPointerListeners(): void {
+  document.addEventListener("pointermove", onRadialPointerMove, { passive: false });
+  document.addEventListener("pointerup", onPointerUpOrCancel);
+  document.addEventListener("pointercancel", onPointerUpOrCancel);
+}
+
+workspace.addEventListener("pointerdown", (e) => {
+  if (!hasTouch || e.pointerType !== "touch" || radialKeyboard === null) return;
+  if (workspace.classList.contains("hidden")) return;
+  if (longPressTimer !== null) return;
+  const pointerId = e.pointerId;
+  const clientX = e.clientX;
+  const clientY = e.clientY;
+  longPressPointerId = pointerId;
+  longPressTimer = setTimeout(() => {
+    longPressTimer = null;
+    longPressPointerId = null;
+    if (!radialKeyboard) return;
+    radialPointerId = pointerId;
+    e.preventDefault();
+    radialKeyboard.show(clientX, clientY);
+    setupRadialPointerListeners();
+  }, LONG_PRESS_MS);
+});
+
+workspace.addEventListener("pointerup", () => {
+  if (longPressPointerId !== null) clearLongPressTimer();
+});
+workspace.addEventListener("pointercancel", () => {
+  if (longPressPointerId !== null) clearLongPressTimer();
+});
+workspace.addEventListener("pointerleave", () => {
+  if (longPressPointerId !== null) clearLongPressTimer();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (workspace.classList.contains("hidden")) return;
+  const target = e.target as HTMLElement;
+  if (target.closest("input") || target.closest("textarea") || target.closest("select")) return;
+
+  const key = e.key;
+  if (
+    key === "S" ||
+    key === "s" ||
+    key === "." ||
+    key === "5" ||
+    key === "Enter" ||
+    key === "Backspace" ||
+    /^\d$/.test(key)
+  ) {
+    e.preventDefault();
+    processKey(key);
   }
 });
 
