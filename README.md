@@ -5,7 +5,7 @@ Interactive image effect sandbox: load an image, type effect numbers and press E
 ## Beware!
 
 > [!WARNING]
-> This project is vibe-coded with minimal edits. 
+> 🤖 This project is vibe-coded with minimal edits. 
 
 
 ## Effects
