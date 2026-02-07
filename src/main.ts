@@ -1,5 +1,5 @@
 import { registerAll } from "./effects/index.js";
-import { get, getName } from "./effects/registry.js";
+import { get, getAllIds, getName } from "./effects/registry.js";
 import * as state from "./state.js";
 
 registerAll();
@@ -126,8 +126,41 @@ function updateBreadcrumb(): void {
   }
 }
 
+/** Deterministic PRNG (mulberry32). Same seed → same sequence. Returns 0–1. */
+function createSeededRng(seed: number): () => number {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(s ^ (s >>> 15), s | 1);
+    t = (t ^ (t + Math.imul(t ^ (t >>> 7), t | 61))) >>> 0;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const SEED_SEQUENCE_MIN = 3;
+const SEED_SEQUENCE_MAX = 12;
+const MAX_SEED_DIGITS = 10;
+
+function applySeedSequence(seed: number): void {
+  const effectIds = getAllIds();
+  if (effectIds.length === 0) return;
+  const rng = createSeededRng(seed);
+  const count =
+    SEED_SEQUENCE_MIN +
+    Math.floor(rng() * (SEED_SEQUENCE_MAX - SEED_SEQUENCE_MIN + 1));
+  const sequence: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const idx = Math.floor(rng() * effectIds.length);
+    sequence.push(effectIds[idx]!);
+  }
+  for (const id of sequence) {
+    applyEffect(id, false);
+  }
+}
+
 function parseTypedEffect(): { id: number; leftHalfOnly: boolean } | null {
   if (typedDigits.length === 0) return null;
+  if (typedDigits.startsWith("S")) return null;
   const leftHalfOnly = typedDigits.endsWith(".5");
   const raw = leftHalfOnly ? typedDigits.slice(0, -2) : typedDigits;
   if (raw.length === 0) return null;
@@ -136,16 +169,30 @@ function parseTypedEffect(): { id: number; leftHalfOnly: boolean } | null {
   return { id, leftHalfOnly };
 }
 
+function parseTypedSeed(): number | null {
+  if (typedDigits.length < 2 || !typedDigits.startsWith("S")) return null;
+  const raw = typedDigits.slice(1);
+  if (raw.length === 0 || raw.length > MAX_SEED_DIGITS) return null;
+  const seed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(seed)) return null;
+  return seed;
+}
+
 function syncCommandUI(): void {
   commandDisplay.textContent = typedDigits;
   if (typedDigits.length > 0) {
     inputArea.classList.add("visible");
-    const parsed = parseTypedEffect();
-    if (parsed && get(parsed.id)) {
-      canvasCaption.textContent =
-        getName(parsed.id) + (parsed.leftHalfOnly ? " (left half)" : "");
+    const seed = parseTypedSeed();
+    if (seed !== null) {
+      canvasCaption.textContent = `Seed ${seed} (run sequence)`;
     } else {
-      canvasCaption.textContent = "";
+      const parsed = parseTypedEffect();
+      if (parsed && get(parsed.id)) {
+        canvasCaption.textContent =
+          getName(parsed.id) + (parsed.leftHalfOnly ? " (left half)" : "");
+      } else {
+        canvasCaption.textContent = "";
+      }
     }
   } else {
     inputArea.classList.remove("visible");
@@ -158,9 +205,22 @@ document.addEventListener("keydown", (e) => {
   const target = e.target as HTMLElement;
   if (target.closest("input") || target.closest("textarea") || target.closest("select")) return;
 
+  if (e.key === "S" || e.key === "s") {
+    e.preventDefault();
+    if (typedDigits.length === 0) {
+      typedDigits = "S";
+      syncCommandUI();
+    }
+    return;
+  }
   if (e.key === ".") {
     e.preventDefault();
-    if (!typedDigits.includes(".") && typedDigits.length >= 1 && typedDigits.length <= MAX_DIGITS) {
+    if (
+      !typedDigits.startsWith("S") &&
+      !typedDigits.includes(".") &&
+      typedDigits.length >= 1 &&
+      typedDigits.length <= MAX_DIGITS
+    ) {
       typedDigits += ".";
       syncCommandUI();
     }
@@ -172,8 +232,15 @@ document.addEventListener("keydown", (e) => {
     syncCommandUI();
     return;
   }
-  if (/^[0-9]$/.test(e.key)) {
+  if (/^\d$/.test(e.key)) {
     e.preventDefault();
+    if (typedDigits.startsWith("S")) {
+      if (typedDigits.length < 1 + MAX_SEED_DIGITS) {
+        typedDigits += e.key;
+        syncCommandUI();
+      }
+      return;
+    }
     if (typedDigits.endsWith(".")) return;
     if (typedDigits.length < MAX_DIGITS) {
       typedDigits += e.key;
@@ -183,6 +250,13 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key === "Enter") {
     e.preventDefault();
+    const seed = parseTypedSeed();
+    if (seed !== null) {
+      applySeedSequence(seed);
+      typedDigits = "";
+      syncCommandUI();
+      return;
+    }
     const parsed = parseTypedEffect();
     if (!parsed || !get(parsed.id)) return;
     applyEffect(parsed.id, parsed.leftHalfOnly);

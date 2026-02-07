@@ -18,3 +18,7 @@ export function getName(id: number): string {
 export function has(id: number): boolean {
   return registry.has(id);
 }
+
+export function getAllIds(): number[] {
+  return [...registry.keys()].sort((a, b) => a - b);
+}
