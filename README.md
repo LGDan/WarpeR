@@ -74,6 +74,18 @@ Interactive image effect sandbox: load an image, type effect numbers and press E
 | 60 | Rotate 15° |
 | 61 | Rotate -5° |
 | 62 | Rotate -15° |
+| 63 | White stripes N/S small |
+| 64 | White stripes N/S medium |
+| 65 | White stripes N/S large |
+| 66 | White stripes E/W small |
+| 67 | White stripes E/W medium |
+| 68 | White stripes E/W large |
+| 69 | White stripes SW/NE small |
+| 70 | White stripes SW/NE medium |
+| 71 | White stripes SW/NE large |
+| 72 | White stripes NW/SE small |
+| 73 | White stripes NW/SE medium |
+| 74 | White stripes NW/SE large |
 
 ## Fun Combos
 

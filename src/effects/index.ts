@@ -22,6 +22,7 @@ import * as sharpen from "./sharpen.js";
 import * as solarize from "./solarize.js";
 import * as splitFour from "./splitFour.js";
 import * as vignette from "./vignette.js";
+import * as whiteStripes from "./whiteStripes.js";
 
 export function registerAll(): void {
   // 1–5: Blur & sharpen
@@ -113,4 +114,18 @@ export function registerAll(): void {
   register(60, { name: "Rotate 15°", apply: rotation.rotate15 });
   register(61, { name: "Rotate -5°", apply: rotation.rotateNeg5 });
   register(62, { name: "Rotate -15°", apply: rotation.rotateNeg15 });
+
+  // 63–74: White stripes (N/S, E/W, SW/NE, NW/SE × small, medium, large)
+  register(63, { name: "White stripes N/S small", apply: whiteStripes.whiteStripesNSSmall });
+  register(64, { name: "White stripes N/S medium", apply: whiteStripes.whiteStripesNSMedium });
+  register(65, { name: "White stripes N/S large", apply: whiteStripes.whiteStripesNSLarge });
+  register(66, { name: "White stripes E/W small", apply: whiteStripes.whiteStripesEWSmall });
+  register(67, { name: "White stripes E/W medium", apply: whiteStripes.whiteStripesEWMedium });
+  register(68, { name: "White stripes E/W large", apply: whiteStripes.whiteStripesEWLarge });
+  register(69, { name: "White stripes SW/NE small", apply: whiteStripes.whiteStripesSWNESmall });
+  register(70, { name: "White stripes SW/NE medium", apply: whiteStripes.whiteStripesSWNEMedium });
+  register(71, { name: "White stripes SW/NE large", apply: whiteStripes.whiteStripesSWNELarge });
+  register(72, { name: "White stripes NW/SE small", apply: whiteStripes.whiteStripesNWSESmall });
+  register(73, { name: "White stripes NW/SE medium", apply: whiteStripes.whiteStripesNWSEMedium });
+  register(74, { name: "White stripes NW/SE large", apply: whiteStripes.whiteStripesNWSELarge });
 }
