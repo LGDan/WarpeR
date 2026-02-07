@@ -66,26 +66,27 @@ Interactive image effect sandbox: load an image, type effect numbers and press E
 | 52 | Find edges |
 | 53 | Glowing edges |
 | 54 | Split into 4 |
-| 55 | Kaleidoscope |
-| 56 | Rotate 180° |
-| 57 | Rotate 90° CW |
-| 58 | Rotate 90° CCW |
-| 59 | Rotate 5° |
-| 60 | Rotate 15° |
-| 61 | Rotate -5° |
-| 62 | Rotate -15° |
-| 63 | White stripes N/S small |
-| 64 | White stripes N/S medium |
-| 65 | White stripes N/S large |
-| 66 | White stripes E/W small |
-| 67 | White stripes E/W medium |
-| 68 | White stripes E/W large |
-| 69 | White stripes SW/NE small |
-| 70 | White stripes SW/NE medium |
-| 71 | White stripes SW/NE large |
-| 72 | White stripes NW/SE small |
-| 73 | White stripes NW/SE medium |
-| 74 | White stripes NW/SE large |
+| 55 | Split into 9 |
+| 56 | Kaleidoscope |
+| 57 | Rotate 180° |
+| 58 | Rotate 90° CW |
+| 59 | Rotate 90° CCW |
+| 60 | Rotate 5° |
+| 61 | Rotate 15° |
+| 62 | Rotate -5° |
+| 63 | Rotate -15° |
+| 64 | White stripes N/S small |
+| 65 | White stripes N/S medium |
+| 66 | White stripes N/S large |
+| 67 | White stripes E/W small |
+| 68 | White stripes E/W medium |
+| 69 | White stripes E/W large |
+| 70 | White stripes SW/NE small |
+| 71 | White stripes SW/NE medium |
+| 72 | White stripes SW/NE large |
+| 73 | White stripes NW/SE small |
+| 74 | White stripes NW/SE medium |
+| 75 | White stripes NW/SE large |
 
 ## Fun Combos
 

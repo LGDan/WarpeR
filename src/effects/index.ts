@@ -21,6 +21,7 @@ import * as sepia from "./sepia.js";
 import * as sharpen from "./sharpen.js";
 import * as solarize from "./solarize.js";
 import * as splitFour from "./splitFour.js";
+import * as splitNine from "./splitNine.js";
 import * as vignette from "./vignette.js";
 import * as whiteStripes from "./whiteStripes.js";
 
@@ -98,34 +99,35 @@ export function registerAll(): void {
 
   // 54–62: Transform & layout
   register(54, { name: "Split into 4", apply: splitFour.splitFour });
-  register(55, { name: "Kaleidoscope", apply: kaleidoscope.kaleidoscope });
-  register(56, { name: "Rotate 180°", apply: rotation.rotate180 });
-  register(57, {
+  register(55, { name: "Split into 9", apply: splitNine.splitNine });
+  register(56, { name: "Kaleidoscope", apply: kaleidoscope.kaleidoscope });
+  register(57, { name: "Rotate 180°", apply: rotation.rotate180 });
+  register(58, {
     name: "Rotate 90° CW",
     apply: rotation.rotate90CW,
     getOutputSize: (w, h) => ({ width: h, height: w }),
   });
-  register(58, {
+  register(59, {
     name: "Rotate 90° CCW",
     apply: rotation.rotate90CCW,
     getOutputSize: (w, h) => ({ width: h, height: w }),
   });
-  register(59, { name: "Rotate 5°", apply: rotation.rotate5 });
-  register(60, { name: "Rotate 15°", apply: rotation.rotate15 });
-  register(61, { name: "Rotate -5°", apply: rotation.rotateNeg5 });
-  register(62, { name: "Rotate -15°", apply: rotation.rotateNeg15 });
+  register(60, { name: "Rotate 5°", apply: rotation.rotate5 });
+  register(61, { name: "Rotate 15°", apply: rotation.rotate15 });
+  register(62, { name: "Rotate -5°", apply: rotation.rotateNeg5 });
+  register(63, { name: "Rotate -15°", apply: rotation.rotateNeg15 });
 
-  // 63–74: White stripes (N/S, E/W, SW/NE, NW/SE × small, medium, large)
-  register(63, { name: "White stripes N/S small", apply: whiteStripes.whiteStripesNSSmall });
-  register(64, { name: "White stripes N/S medium", apply: whiteStripes.whiteStripesNSMedium });
-  register(65, { name: "White stripes N/S large", apply: whiteStripes.whiteStripesNSLarge });
-  register(66, { name: "White stripes E/W small", apply: whiteStripes.whiteStripesEWSmall });
-  register(67, { name: "White stripes E/W medium", apply: whiteStripes.whiteStripesEWMedium });
-  register(68, { name: "White stripes E/W large", apply: whiteStripes.whiteStripesEWLarge });
-  register(69, { name: "White stripes SW/NE small", apply: whiteStripes.whiteStripesSWNESmall });
-  register(70, { name: "White stripes SW/NE medium", apply: whiteStripes.whiteStripesSWNEMedium });
-  register(71, { name: "White stripes SW/NE large", apply: whiteStripes.whiteStripesSWNELarge });
-  register(72, { name: "White stripes NW/SE small", apply: whiteStripes.whiteStripesNWSESmall });
-  register(73, { name: "White stripes NW/SE medium", apply: whiteStripes.whiteStripesNWSEMedium });
-  register(74, { name: "White stripes NW/SE large", apply: whiteStripes.whiteStripesNWSELarge });
+  // 64–75: White stripes (N/S, E/W, SW/NE, NW/SE × small, medium, large)
+  register(64, { name: "White stripes N/S small", apply: whiteStripes.whiteStripesNSSmall });
+  register(65, { name: "White stripes N/S medium", apply: whiteStripes.whiteStripesNSMedium });
+  register(66, { name: "White stripes N/S large", apply: whiteStripes.whiteStripesNSLarge });
+  register(67, { name: "White stripes E/W small", apply: whiteStripes.whiteStripesEWSmall });
+  register(68, { name: "White stripes E/W medium", apply: whiteStripes.whiteStripesEWMedium });
+  register(69, { name: "White stripes E/W large", apply: whiteStripes.whiteStripesEWLarge });
+  register(70, { name: "White stripes SW/NE small", apply: whiteStripes.whiteStripesSWNESmall });
+  register(71, { name: "White stripes SW/NE medium", apply: whiteStripes.whiteStripesSWNEMedium });
+  register(72, { name: "White stripes SW/NE large", apply: whiteStripes.whiteStripesSWNELarge });
+  register(73, { name: "White stripes NW/SE small", apply: whiteStripes.whiteStripesNWSESmall });
+  register(74, { name: "White stripes NW/SE medium", apply: whiteStripes.whiteStripesNWSEMedium });
+  register(75, { name: "White stripes NW/SE large", apply: whiteStripes.whiteStripesNWSELarge });
 }
